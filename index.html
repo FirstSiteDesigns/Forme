@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FORME — Built for the Body</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --red: #C8102E;
+    --red-deep: #9B0C22;
+    --black: #0A0A0A;
+    --white: #F5F4F2;
+    --grey: #999690;
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-serif: 'Cormorant Garamond', serif;
+    --font-body: 'Montserrat', sans-serif;
+  }
+
+  html { scroll-behavior: auto; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--font-body);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    position: fixed;
+    width: 8px; height: 8px;
+    background: var(--red);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s ease;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(200,16,46,0.5);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: all 0.18s ease;
+  }
+  body:has(a:hover) .cursor-ring,
+  body:has(button:hover) .cursor-ring {
+    transform: translate(-50%, -50%) scale(2);
+    border-color: var(--red);
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 28px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    mix-blend-mode: normal;
+  }
+  .nav-logo {
+    font-family: var(--font-display);
+    font-size: 22px;
+    letter-spacing: 0.22em;
+    color: var(--white);
+    text-decoration: none;
+  }
+  .nav-logo span {
+    color: var(--red);
+  }
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: var(--font-body);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--white);
+    text-decoration: none;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+  }
+  .nav-links a:hover { opacity: 1; }
+
+  /* ===== HERO SECTION ===== */
+  #hero {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+  }
+  .hero-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    transform-origin: center center;
+    will-change: transform;
+  }
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(10,10,10,0.1) 0%,
+      rgba(10,10,10,0.0) 40%,
+      rgba(10,10,10,0.7) 80%,
+      rgba(10,10,10,1) 100%
+    );
+  }
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 0 48px 64px;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(96px, 18vw, 240px);
+    line-height: 0.88;
+    letter-spacing: -0.01em;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .hero-title .line {
+    display: block;
+    transform: translateY(110%);
+    transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .hero-title .line.in { transform: translateY(0); }
+  .hero-title .line:nth-child(2) { transition-delay: 0.08s; }
+  .hero-title .line.red { color: var(--red); }
+
+  .hero-right {
+    text-align: right;
+    max-width: 260px;
+  }
+  .hero-tagline {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 18px;
+    font-weight: 300;
+    color: var(--white);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.8s ease 0.6s;
+    line-height: 1.5;
+  }
+  .hero-tagline.in { opacity: 1; transform: translateY(0); }
+  .hero-cta {
+    display: inline-block;
+    margin-top: 20px;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--red);
+    text-decoration: none;
+    border-bottom: 1px solid var(--red);
+    padding-bottom: 3px;
+    opacity: 0;
+    transition: opacity 0.6s ease 1s, color 0.2s;
+  }
+  .hero-cta.in { opacity: 1; }
+  .hero-cta:hover { color: var(--white); border-color: var(--white); }
+
+  .scroll-indicator {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    animation: fadeInUp 1s ease 1.4s forwards;
+  }
+  .scroll-indicator span {
+    font-size: 7px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--grey);
+  }
+  .scroll-line {
+    width: 1px;
+    height: 48px;
+    background: var(--grey);
+    transform-origin: top;
+    animation: scrollPulse 1.8s ease-in-out infinite 1.6s;
+  }
+  @keyframes scrollPulse {
+    0% { transform: scaleY(0); opacity: 1; }
+    60% { transform: scaleY(1); opacity: 1; }
+    100% { transform: scaleY(1); opacity: 0; }
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translate(-50%, 10px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+  }
+
+  /* ===== MARQUEE STRIP ===== */
+  .marquee-strip {
+    background: var(--red);
+    padding: 12px 0;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .marquee-inner {
+    display: inline-flex;
+    animation: marquee 18s linear infinite;
+  }
+  .marquee-inner span {
+    font-family: var(--font-display);
+    font-size: 13px;
+    letter-spacing: 0.3em;
+    color: var(--black);
+    padding: 0 32px;
+  }
+  .marquee-inner .dot {
+    color: var(--black);
+    opacity: 0.5;
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* ===== COLLECTION REVEAL SECTION ===== */
+  #collection {
+    position: relative;
+    padding: 120px 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    min-height: 100vh;
+  }
+  .collection-text {
+    position: sticky;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .collection-eyebrow {
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 24px;
+  }
+  .collection-heading {
+    font-family: var(--font-display);
+    font-size: clamp(64px, 8vw, 120px);
+    line-height: 0.9;
+    margin-bottom: 32px;
+  }
+  .collection-heading em {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 0.7em;
+    font-weight: 300;
+    display: block;
+    color: var(--grey);
+  }
+  .collection-body {
+    font-size: 13px;
+    font-weight: 300;
+    line-height: 1.9;
+    color: rgba(245,244,242,0.65);
+    max-width: 340px;
+  }
+
+  .collection-images {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .coll-img-wrap {
+    position: relative;
+    overflow: hidden;
+    border-radius: 2px;
+  }
+  .coll-img-wrap img {
+    width: 100%;
+    height: 520px;
+    object-fit: cover;
+    object-position: center top;
+    transform: scale(1.08);
+    transition: transform 0.6s ease;
+    will-change: transform;
+  }
+  .coll-img-wrap:hover img { transform: scale(1.0); }
+  .coll-label {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--white);
+    background: rgba(10,10,10,0.6);
+    padding: 6px 12px;
+    backdrop-filter: blur(4px);
+  }
+
+  /* ===== PINNED SCROLL CHAPTER ===== */
+  #chapter {
+    position: relative;
+    height: 400vh;
+  }
+  .chapter-sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Background image layers */
+  .chapter-bg {
+    position: absolute;
+    inset: 0;
+    will-change: transform, opacity;
+  }
+  .chapter-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+  .chapter-bg-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(10,10,10,0.55);
+  }
+
+  /* Text panels inside pinned chapter */
+  .chapter-panel {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    will-change: opacity, transform;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .chapter-panel.active { opacity: 1; pointer-events: auto; }
+
+  .chapter-text {
+    text-align: center;
+    padding: 0 40px;
+  }
+  .chapter-num {
+    font-family: var(--font-display);
+    font-size: 11px;
+    letter-spacing: 0.35em;
+    color: var(--red);
+    margin-bottom: 20px;
+  }
+  .chapter-big {
+    font-family: var(--font-display);
+    font-size: clamp(72px, 14vw, 180px);
+    line-height: 0.85;
+    color: var(--white);
+  }
+  .chapter-sub {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: clamp(20px, 3vw, 36px);
+    font-weight: 300;
+    color: rgba(245,244,242,0.75);
+    margin-top: 16px;
+  }
+
+  /* Red slash element */
+  .chapter-slash {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--red);
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .chapter-panel.active .chapter-slash { transform: scaleY(1); }
+
+  /* ===== GRID SECTION ===== */
+  #grid {
+    background: var(--white);
+    padding: 120px 48px;
+  }
+  .grid-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 64px;
+  }
+  .grid-title {
+    font-family: var(--font-display);
+    font-size: clamp(60px, 9vw, 130px);
+    line-height: 0.88;
+    color: var(--black);
+  }
+  .grid-title em {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 0.65em;
+    color: var(--red);
+    display: block;
+  }
+  .grid-desc {
+    max-width: 280px;
+    font-size: 12px;
+    font-weight: 300;
+    line-height: 1.8;
+    color: rgba(10,10,10,0.55);
+    text-align: right;
+  }
+
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto auto;
+    gap: 6px;
+  }
+  .pg-item {
+    overflow: hidden;
+    position: relative;
+  }
+  .pg-item:first-child {
+    grid-column: span 2;
+  }
+  .pg-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    min-height: 340px;
+    display: block;
+    transform: scale(1.06);
+    transition: transform 0.8s ease;
+    filter: grayscale(10%);
+  }
+  .pg-item:hover img {
+    transform: scale(1.0);
+    filter: grayscale(0%);
+  }
+  .pg-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(10,10,10,0);
+    transition: background 0.4s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .pg-item:hover .pg-overlay { background: rgba(200,16,46,0.12); }
+  .pg-label {
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--white);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all 0.3s ease;
+  }
+  .pg-item:hover .pg-label { opacity: 1; transform: translateY(0); }
+
+  /* ===== STATEMENT SECTION ===== */
+  #statement {
+    background: var(--black);
+    padding: 180px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+  }
+  .statement-bg-text {
+    position: absolute;
+    font-family: var(--font-display);
+    font-size: clamp(120px, 25vw, 380px);
+    color: rgba(200,16,46,0.04);
+    white-space: nowrap;
+    pointer-events: none;
+    user-select: none;
+    will-change: transform;
+  }
+  .statement-content {
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    max-width: 900px;
+  }
+  .statement-eyebrow {
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 40px;
+  }
+  .statement-text {
+    font-family: var(--font-serif);
+    font-size: clamp(32px, 5vw, 72px);
+    font-weight: 300;
+    line-height: 1.2;
+    color: var(--white);
+  }
+  .statement-text em {
+    font-style: italic;
+    color: var(--red);
+  }
+  .statement-divider {
+    width: 1px;
+    height: 80px;
+    background: var(--red);
+    margin: 48px auto;
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 0.8s ease;
+  }
+  .statement-divider.in { transform: scaleY(1); }
+  .statement-sub {
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--grey);
+  }
+
+  /* ===== HORIZONTAL SCROLL SECTION ===== */
+  #hscroll {
+    position: relative;
+    height: 300vh;
+  }
+  .hscroll-sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+  }
+  .hscroll-track {
+    display: flex;
+    gap: 32px;
+    padding: 0 48px;
+    will-change: transform;
+    align-items: center;
+  }
+  .hscroll-card {
+    flex: 0 0 380px;
+    height: 540px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 2px;
+  }
+  .hscroll-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.1);
+    transition: transform 0.6s ease;
+  }
+  .hscroll-card:hover img { transform: scale(1.03); }
+  .hscroll-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(10,10,10,0.8) 0%, transparent 50%);
+  }
+  .hscroll-card-info {
+    position: absolute;
+    bottom: 28px;
+    left: 28px;
+    right: 28px;
+  }
+  .hscroll-card-name {
+    font-family: var(--font-display);
+    font-size: 36px;
+    letter-spacing: 0.06em;
+    color: var(--white);
+    line-height: 1;
+  }
+  .hscroll-card-sub {
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-top: 8px;
+  }
+  .hscroll-header {
+    flex: 0 0 auto;
+    padding-right: 40px;
+    border-right: 1px solid rgba(245,244,242,0.1);
+    margin-right: 8px;
+  }
+  .hscroll-header-title {
+    font-family: var(--font-display);
+    font-size: clamp(64px, 9vw, 120px);
+    line-height: 0.88;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    color: var(--white);
+    letter-spacing: 0.05em;
+  }
+
+  /* ===== CLOSING SECTION ===== */
+  #closing {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .closing-bg {
+    position: absolute;
+    inset: 0;
+    will-change: transform;
+  }
+  .closing-bg img {
+    width: 100%;
+    height: 120%;
+    object-fit: cover;
+    object-position: center 30%;
+  }
+  .closing-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(10,10,10,0.85) 0%,
+      rgba(155,12,34,0.3) 100%
+    );
+  }
+  .closing-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+  }
+  .closing-title {
+    font-family: var(--font-display);
+    font-size: clamp(80px, 16vw, 220px);
+    line-height: 0.85;
+    color: var(--white);
+  }
+  .closing-title .red-line { color: var(--red); display: block; }
+  .closing-cta {
+    display: inline-block;
+    margin-top: 48px;
+    padding: 16px 48px;
+    border: 1px solid var(--red);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--white);
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    transition: color 0.4s ease;
+  }
+  .closing-cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--red);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+    z-index: -1;
+  }
+  .closing-cta:hover::before { transform: scaleX(1); }
+  .closing-cta:hover { color: var(--white); }
+
+  /* ===== FOOTER ===== */
+  footer {
+    background: var(--black);
+    border-top: 1px solid rgba(245,244,242,0.08);
+    padding: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .footer-logo {
+    font-family: var(--font-display);
+    font-size: 28px;
+    letter-spacing: 0.2em;
+    color: var(--white);
+  }
+  .footer-logo span { color: var(--red); }
+  .footer-credit {
+    font-size: 9px;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    color: var(--grey);
+    text-transform: uppercase;
+  }
+  .footer-credit a {
+    color: var(--white);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(245,244,242,0.2);
+    padding-bottom: 1px;
+    transition: border-color 0.2s;
+  }
+  .footer-credit a:hover { border-color: var(--red); color: var(--red); }
+
+  /* ===== REVEAL ANIMATIONS ===== */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal.in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* nav glass on scroll */
+  nav.scrolled {
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(16px);
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 20px 24px; }
+    .nav-links { display: none; }
+    #collection { grid-template-columns: 1fr; padding: 80px 24px; }
+    .collection-text { position: relative; top: auto; transform: none; }
+    #grid { padding: 80px 24px; }
+    .grid-header { flex-direction: column; gap: 24px; }
+    .grid-desc { text-align: left; }
+    .photo-grid { grid-template-columns: 1fr 1fr; }
+    .pg-item:first-child { grid-column: span 2; }
+    #statement { padding: 120px 24px; }
+    .hscroll-card { flex: 0 0 280px; height: 400px; }
+    footer { flex-direction: column; gap: 20px; text-align: center; }
+    .hero-content { padding: 0 24px 48px; }
+    .hero-right { max-width: 200px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">FORM<span>E</span></a>
+  <ul class="nav-links">
+    <li><a href="#">Collection</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Shop</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section id="hero">
+  <img class="hero-img" src="Forme_Hero.png" alt="Forme activewear hero" id="heroImg">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-title" id="heroTitle">
+      <span class="line">FORME</span>
+      <span class="line red">SS25</span>
+    </div>
+    <div class="hero-right">
+      <p class="hero-tagline" id="heroTag">Engineered for the body.<br>Worn for the work.</p>
+      <a href="#collection" class="hero-cta" id="heroCta">Explore Collection</a>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-strip">
+  <div class="marquee-inner" id="marqueeInner">
+    <span>FORME ACTIVEWEAR</span><span class="dot">—</span>
+    <span>BUILT FOR THE BODY</span><span class="dot">—</span>
+    <span>CHERRY RED</span><span class="dot">—</span>
+    <span>SS 2025</span><span class="dot">—</span>
+    <span>MOVE IN FORME</span><span class="dot">—</span>
+    <span>FORME ACTIVEWEAR</span><span class="dot">—</span>
+    <span>BUILT FOR THE BODY</span><span class="dot">—</span>
+    <span>CHERRY RED</span><span class="dot">—</span>
+    <span>SS 2025</span><span class="dot">—</span>
+    <span>MOVE IN FORME</span><span class="dot">—</span>
+  </div>
+</div>
+
+<!-- ===== COLLECTION ===== -->
+<section id="collection">
+  <div class="collection-text">
+    <p class="collection-eyebrow reveal">Summer / Autumn 2025</p>
+    <h2 class="collection-heading reveal" style="transition-delay:0.1s">
+      THE
+      <em>body</em>
+      SPEAKS
+    </h2>
+    <p class="collection-body reveal" style="transition-delay:0.2s">
+      Designed where performance meets presence. Forme activewear moves with you — in the weight room, on the reformer, in the heat of the work. Every seam deliberate. Every silhouette exact.
+    </p>
+  </div>
+  <div class="collection-images">
+    <div class="coll-img-wrap reveal">
+      <img src="Forme1.png" alt="Forme collection 1" loading="lazy">
+      <div class="coll-label">The Black Series</div>
+    </div>
+    <div class="coll-img-wrap reveal" style="transition-delay:0.15s">
+      <img src="Forme6.png" alt="Forme collection 2" loading="lazy">
+      <div class="coll-label">Cherry Red</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PINNED CHAPTER ===== -->
+<section id="chapter">
+  <div class="chapter-sticky" id="chapterSticky">
+
+    <!-- Background images -->
+    <div class="chapter-bg" id="chBg0">
+      <img src="Forme3.png" alt="">
+      <div class="chapter-bg-overlay"></div>
+    </div>
+    <div class="chapter-bg" id="chBg1" style="opacity:0;">
+      <img src="Forme4.png" alt="">
+      <div class="chapter-bg-overlay"></div>
+    </div>
+    <div class="chapter-bg" id="chBg2" style="opacity:0;">
+      <img src="Forme7.png" alt="">
+      <div class="chapter-bg-overlay"></div>
+    </div>
+
+    <!-- Panel 0 -->
+    <div class="chapter-panel" id="chPanel0">
+      <div class="chapter-slash"></div>
+      <div class="chapter-text">
+        <p class="chapter-num">01 — PRECISION</p>
+        <h2 class="chapter-big">EVERY<br>CURVE</h2>
+        <p class="chapter-sub">built to fit your form exactly</p>
+      </div>
+    </div>
+
+    <!-- Panel 1 -->
+    <div class="chapter-panel" id="chPanel1">
+      <div class="chapter-slash"></div>
+      <div class="chapter-text">
+        <p class="chapter-num">02 — MOVEMENT</p>
+        <h2 class="chapter-big">PUSH<br>HARDER</h2>
+        <p class="chapter-sub">performance fabrics, unrestricted range</p>
+      </div>
+    </div>
+
+    <!-- Panel 2 -->
+    <div class="chapter-panel" id="chPanel2">
+      <div class="chapter-slash"></div>
+      <div class="chapter-text">
+        <p class="chapter-num">03 — IDENTITY</p>
+        <h2 class="chapter-big">THIS IS<br>FORME</h2>
+        <p class="chapter-sub">the body is the statement</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== PHOTO GRID ===== -->
+<section id="grid">
+  <div class="grid-header">
+    <h2 class="grid-title reveal">
+      THE
+      <em>edit</em>
+    </h2>
+    <p class="grid-desc reveal" style="transition-delay:0.15s; color: rgba(10,10,10,0.55)">
+      Six pieces. Three colourways. One direction. Forme SS25 is a collection built on confidence, cut to move.
+    </p>
+  </div>
+  <div class="photo-grid">
+    <div class="pg-item reveal">
+      <img src="Forme_Hero.png" alt="Forme hero grid" loading="lazy">
+      <div class="pg-overlay"><span class="pg-label">The Full Edit</span></div>
+    </div>
+    <div class="pg-item reveal" style="transition-delay:0.1s">
+      <img src="Forme5.png" alt="Forme white bra" loading="lazy">
+      <div class="pg-overlay"><span class="pg-label">Studio White</span></div>
+    </div>
+    <div class="pg-item reveal" style="transition-delay:0.05s">
+      <img src="Forme2.png" alt="Forme back detail" loading="lazy">
+      <div class="pg-overlay"><span class="pg-label">Cross-Back</span></div>
+    </div>
+    <div class="pg-item reveal" style="transition-delay:0.15s">
+      <img src="Forme7.png" alt="Forme reformer" loading="lazy">
+      <div class="pg-overlay"><span class="pg-label">Cherry Red</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STATEMENT ===== -->
+<section id="statement">
+  <div class="statement-bg-text" id="statBg">FORME</div>
+  <div class="statement-content">
+    <p class="statement-eyebrow reveal">The philosophy</p>
+    <p class="statement-text reveal" style="transition-delay:0.1s">
+      Strength is a silhouette.<br>
+      Discipline is a <em>design principle</em>.<br>
+      Your body is already the brief.
+    </p>
+    <div class="statement-divider" id="statDivider"></div>
+    <p class="statement-sub reveal" style="transition-delay:0.3s">Forme — SS 2025 Collection</p>
+  </div>
+</section>
+
+<!-- ===== HORIZONTAL SCROLL ===== -->
+<section id="hscroll">
+  <div class="hscroll-sticky">
+    <div class="hscroll-track" id="hscrollTrack">
+      <div class="hscroll-header">
+        <div class="hscroll-header-title">THE<br>LOOK</div>
+      </div>
+      <div class="hscroll-card">
+        <img src="Forme1.png" alt="" loading="lazy">
+        <div class="hscroll-card-overlay"></div>
+        <div class="hscroll-card-info">
+          <div class="hscroll-card-name">BLACK<br>SERIES</div>
+          <div class="hscroll-card-sub">The Weight Room</div>
+        </div>
+      </div>
+      <div class="hscroll-card">
+        <img src="Forme6.png" alt="" loading="lazy">
+        <div class="hscroll-card-overlay"></div>
+        <div class="hscroll-card-info">
+          <div class="hscroll-card-name">CHERRY<br>RED</div>
+          <div class="hscroll-card-sub">The Reformer</div>
+        </div>
+      </div>
+      <div class="hscroll-card">
+        <img src="Forme5.png" alt="" loading="lazy">
+        <div class="hscroll-card-overlay"></div>
+        <div class="hscroll-card-info">
+          <div class="hscroll-card-name">STUDIO<br>WHITE</div>
+          <div class="hscroll-card-sub">The Practice</div>
+        </div>
+      </div>
+      <div class="hscroll-card">
+        <img src="Forme7.png" alt="" loading="lazy">
+        <div class="hscroll-card-overlay"></div>
+        <div class="hscroll-card-info">
+          <div class="hscroll-card-name">ALL OUT<br>ROUGE</div>
+          <div class="hscroll-card-sub">The Finish</div>
+        </div>
+      </div>
+      <div class="hscroll-card">
+        <img src="Forme4.png" alt="" loading="lazy">
+        <div class="hscroll-card-overlay"></div>
+        <div class="hscroll-card-info">
+          <div class="hscroll-card-name">THE<br>DETAIL</div>
+          <div class="hscroll-card-sub">Forme Signature</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CLOSING ===== -->
+<section id="closing">
+  <div class="closing-bg" id="closingBg">
+    <img src="Forme3.png" alt="" loading="lazy">
+  </div>
+  <div class="closing-overlay"></div>
+  <div class="closing-content">
+    <div class="closing-title">
+      WEAR
+      <span class="red-line">YOUR</span>
+      WORK.
+    </div>
+    <a href="#" class="closing-cta">Shop the Collection</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">FORM<span>E</span></div>
+  <p class="footer-credit">
+    Site by <a href="https://builtbyherdesigns.com" target="_blank">Built By Her</a>
+  </p>
+</footer>
+
+<script>
+// ===== CURSOR =====
+const cursor = document.getElementById('cursor');
+const cursorRing = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+function animateCursor() {
+  rx += (mx - rx) * 0.15;
+  ry += (my - ry) * 0.15;
+  cursor.style.left = mx + 'px';
+  cursor.style.top = my + 'px';
+  cursorRing.style.left = rx + 'px';
+  cursorRing.style.top = ry + 'px';
+  requestAnimationFrame(animateCursor);
+}
+animateCursor();
+
+// ===== NAV GLASS =====
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// ===== HERO REVEAL =====
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.querySelectorAll('.hero-title .line').forEach(l => l.classList.add('in'));
+    document.getElementById('heroTag').classList.add('in');
+    document.getElementById('heroCta').classList.add('in');
+  }, 200);
+});
+
+// ===== HERO PARALLAX =====
+const heroImg = document.getElementById('heroImg');
+window.addEventListener('scroll', () => {
+  const scrollY = window.scrollY;
+  const heroH = document.getElementById('hero').offsetHeight;
+  if (scrollY < heroH) {
+    heroImg.style.transform = `scale(1.08) translateY(${scrollY * 0.3}px)`;
+  }
+});
+
+// ===== INTERSECTION OBSERVER REVEALS =====
+const reveals = document.querySelectorAll('.reveal');
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in'); }
+  });
+}, { threshold: 0.15 });
+reveals.forEach(r => revealObs.observe(r));
+
+// statement divider
+const statDiv = document.getElementById('statDivider');
+const statObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) statDiv.classList.add('in'); });
+}, { threshold: 0.5 });
+statObs.observe(statDiv);
+
+// ===== PINNED CHAPTER =====
+const chapter = document.getElementById('chapter');
+const panels = [
+  document.getElementById('chPanel0'),
+  document.getElementById('chPanel1'),
+  document.getElementById('chPanel2'),
+];
+const bgs = [
+  document.getElementById('chBg0'),
+  document.getElementById('chBg1'),
+  document.getElementById('chBg2'),
+];
+// start with panel 0 visible
+panels[0].classList.add('active');
+
+function updateChapter() {
+  const rect = chapter.getBoundingClientRect();
+  const chapterH = chapter.offsetHeight;
+  const progress = -rect.top / (chapterH - window.innerHeight);
+  const clampedProgress = Math.max(0, Math.min(1, progress));
+  const index = Math.min(2, Math.floor(clampedProgress * 3));
+
+  panels.forEach((p, i) => {
+    const active = i === index;
+    p.classList.toggle('active', active);
+  });
+  bgs.forEach((b, i) => {
+    const target = i === index ? 1 : 0;
+    const current = parseFloat(b.style.opacity) || (i === 0 ? 1 : 0);
+    b.style.opacity = current + (target - current) * 0.12;
+    // subtle bg parallax
+    if (i === index) {
+      const panelProgress = (clampedProgress * 3) - index;
+      b.style.transform = `translateY(${panelProgress * -30}px)`;
+    }
+  });
+}
+
+// ===== HORIZONTAL SCROLL =====
+const hscrollSection = document.getElementById('hscroll');
+const hscrollTrack = document.getElementById('hscrollTrack');
+
+function updateHscroll() {
+  const rect = hscrollSection.getBoundingClientRect();
+  const sectionH = hscrollSection.offsetHeight;
+  const progress = -rect.top / (sectionH - window.innerHeight);
+  const clamped = Math.max(0, Math.min(1, progress));
+  const trackW = hscrollTrack.scrollWidth - window.innerWidth;
+  hscrollTrack.style.transform = `translateX(${-clamped * trackW}px)`;
+}
+
+// ===== STATEMENT BG PARALLAX =====
+const statBg = document.getElementById('statBg');
+function updateStatBg() {
+  const rect = document.getElementById('statement').getBoundingClientRect();
+  const centerOffset = rect.top + rect.height / 2 - window.innerHeight / 2;
+  statBg.style.transform = `translateX(${centerOffset * 0.05}px) translateY(${centerOffset * 0.02}px)`;
+}
+
+// ===== CLOSING PARALLAX =====
+const closingBg = document.getElementById('closingBg');
+function updateClosing() {
+  const rect = document.getElementById('closing').getBoundingClientRect();
+  const progress = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
+  closingBg.style.transform = `translateY(${(progress - 0.5) * 60}px)`;
+}
+
+// ===== MAIN SCROLL HANDLER =====
+window.addEventListener('scroll', () => {
+  updateChapter();
+  updateHscroll();
+  updateStatBg();
+  updateClosing();
+}, { passive: true });
+
+// init
+updateChapter();
+updateHscroll();
+updateStatBg();
+updateClosing();
+</script>
+</body>
+</html>
