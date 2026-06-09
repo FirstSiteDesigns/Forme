@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FORME — Built for the Body</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Cormorant+Garamond:ital,wght@0,300;1,300;1,400&family=Montserrat:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --red: #C8102E;
+  --black: #080808;
+  --white: #F5F4F2;
+  --grey: #888580;
+  --anton: 'Anton', sans-serif;
+  --serif: 'Cormorant Garamond', serif;
+  --body: 'Montserrat', sans-serif;
+}
+
+html { scroll-behavior: auto; }
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--body);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+@media (hover: none) {
+  body { cursor: auto; }
+  #cursor, #cursorRing { display: none !important; }
+}
+
+#cursor {
+  position: fixed; width: 8px; height: 8px;
+  background: var(--red); border-radius: 50%;
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%,-50%);
+}
+#cursorRing {
+  position: fixed; width: 34px; height: 34px;
+  border: 1px solid rgba(200,16,46,0.5); border-radius: 50%;
+  pointer-events: none; z-index: 9998;
+  transform: translate(-50%,-50%);
+  transition: all 0.16s ease;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  padding: 24px 48px;
+  display: flex; align-items: center; justify-content: space-between;
+  transition: background 0.4s;
+}
+nav.scrolled { background: rgba(8,8,8,0.92); backdrop-filter: blur(16px); }
+.nav-logo {
+  font-family: var(--anton); font-size: 20px; letter-spacing: 0.15em;
+  color: var(--white); text-decoration: none;
+}
+.nav-logo .e { color: var(--red); }
+.nav-links { display: flex; gap: 36px; list-style: none; }
+.nav-links a {
+  font-size: 8px; font-weight: 700; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--white); text-decoration: none;
+  opacity: 0.6; transition: opacity 0.2s;
+}
+.nav-links a:hover { opacity: 1; }
+
+/* ══════════════════════════════
+   HERO
+   Full-bleed Forme_Hero.png background.
+   Three-column layout: left text | centre title | right stat+cta
+   ══════════════════════════════ */
+#hero {
+  position: relative;
+  height: 100vh; min-height: 640px;
+  overflow: hidden;
+  /* three columns */
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: end;
+}
+
+/* Background photo */
+.hero-bg {
+  position: absolute; inset: 0; z-index: 0;
+}
+.hero-bg img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center center;
+  display: block;
+}
+/* Overlay — dark enough for text, light enough photo shows */
+.hero-bg::after {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(to bottom, rgba(8,8,8,0.3) 0%, rgba(8,8,8,0.0) 30%, rgba(8,8,8,0.5) 75%, rgba(8,8,8,0.92) 100%),
+    linear-gradient(to right, rgba(8,8,8,0.5) 0%, transparent 40%, transparent 60%, rgba(8,8,8,0.4) 100%);
+}
+
+/* Red edge slash */
+.hero-slash {
+  position: absolute; top: 0; left: 0; z-index: 1;
+  width: 3px; height: 100%; background: var(--red);
+  transform: scaleY(0); transform-origin: top;
+  transition: transform 1.2s cubic-bezier(0.16,1,0.3,1) 0.3s;
+}
+.hero-slash.in { transform: scaleY(1); }
+
+/* Left col */
+.hero-left {
+  position: relative; z-index: 1;
+  padding: 0 0 56px 48px;
+  display: flex; flex-direction: column; gap: 18px; justify-content: flex-end;
+}
+.hero-eyebrow {
+  font-size: 8px; font-weight: 700; letter-spacing: 0.28em;
+  text-transform: uppercase; color: var(--red);
+  opacity: 0; transform: translateX(-24px);
+  transition: all 0.7s ease 0.9s;
+}
+.hero-eyebrow.in { opacity: 1; transform: translateX(0); }
+.hero-tagline {
+  font-family: var(--serif); font-style: italic; font-weight: 300;
+  font-size: clamp(16px, 1.6vw, 22px); line-height: 1.6;
+  color: rgba(245,244,242,0.8); max-width: 210px;
+  opacity: 0; transform: translateX(-24px);
+  transition: all 0.7s ease 1.1s;
+}
+.hero-tagline.in { opacity: 1; transform: translateX(0); }
+.hero-scroll {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
+  opacity: 0; animation: fadein 0.8s ease 1.9s forwards;
+}
+.hero-scroll span {
+  font-size: 7px; font-weight: 700; letter-spacing: 0.28em;
+  text-transform: uppercase; color: var(--grey);
+}
+.hero-scroll-line {
+  width: 1px; height: 40px; background: var(--grey); transform-origin: top;
+  animation: pulse 2s ease-in-out infinite 2.1s;
+}
+
+/* Centre col — FORME title */
+.hero-centre {
+  position: relative; z-index: 1;
+  display: flex; align-items: flex-end; justify-content: center;
+  padding-bottom: 56px;
+}
+.hero-title {
+  font-family: var(--anton);
+  font-size: clamp(90px, 14vw, 190px);
+  line-height: 1; letter-spacing: 0.03em;
+  color: var(--white);
+  /* single line, E in red */
+  white-space: nowrap;
+  overflow: hidden;
+  transform: translateY(110%);
+  transition: transform 1s cubic-bezier(0.16,1,0.3,1) 0.2s;
+}
+.hero-title.in { transform: translateY(0); }
+.hero-title .e { color: var(--red); }
+
+/* Right col */
+.hero-right {
+  position: relative; z-index: 1;
+  padding: 0 48px 56px 0;
+  display: flex; flex-direction: column; align-items: flex-end; gap: 24px;
+}
+.hero-stat {
+  text-align: right;
+  opacity: 0; transform: translateX(24px);
+  transition: all 0.7s ease 1.2s;
+}
+.hero-stat.in { opacity: 1; transform: translateX(0); }
+.hero-stat-num {
+  font-family: var(--anton); font-size: 52px; color: var(--red);
+  line-height: 1; letter-spacing: 0.02em;
+}
+.hero-stat-label {
+  font-size: 7px; font-weight: 700; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--grey); margin-top: 4px;
+}
+.hero-cta {
+  display: inline-block; padding: 13px 30px;
+  border: 1px solid var(--red);
+  font-size: 8px; font-weight: 700; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--white); text-decoration: none;
+  position: relative; overflow: hidden;
+  opacity: 0; transform: translateX(24px);
+  transition: opacity 0.7s ease 1.4s, transform 0.7s ease 1.4s, color 0.3s;
+}
+.hero-cta.in { opacity: 1; transform: translateX(0); }
+.hero-cta::before {
+  content: ''; position: absolute; inset: 0; background: var(--red);
+  transform: scaleX(0); transform-origin: left; transition: transform 0.35s ease; z-index: -1;
+}
+.hero-cta:hover::before { transform: scaleX(1); }
+
+@keyframes pulse {
+  0% { transform: scaleY(0); opacity: 1; }
+  65% { transform: scaleY(1); opacity: 1; }
+  100% { transform: scaleY(1); opacity: 0; }
+}
+@keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+
+/* ── MARQUEE ── */
+.marquee-strip {
+  background: var(--red); padding: 11px 0;
+  overflow: hidden; white-space: nowrap;
+}
+.marquee-inner {
+  display: inline-flex;
+  animation: marquee 22s linear infinite;
+}
+.marquee-inner span {
+  font-family: var(--anton); font-size: 13px; letter-spacing: 0.28em;
+  color: var(--black); padding: 0 28px;
+}
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* ══════════════════════════════
+   COLLECTION
+   Sticky left text, scrolling right images
+   Heading: staggered — THE flush left, body indented, SPEAKS oversized
+   ══════════════════════════════ */
+#collection {
+  padding: 120px 48px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start;
+}
+.coll-text {
+  position: sticky; top: 50%; transform: translateY(-50%);
+}
+.coll-eyebrow {
+  font-size: 8px; font-weight: 700; letter-spacing: 0.25em;
+  text-transform: uppercase; color: var(--red); margin-bottom: 24px;
+}
+.coll-heading {
+  margin-bottom: 32px;
+}
+/* THE — flush left, Anton */
+.coll-heading .word-the {
+  font-family: var(--anton); display: block;
+  font-size: clamp(60px, 7.5vw, 105px); line-height: 1;
+  color: var(--white); letter-spacing: 0.02em;
+}
+/* body — italic serif, indented, smaller */
+.coll-heading .word-body {
+  font-family: var(--serif); font-style: italic; font-weight: 300; display: block;
+  font-size: clamp(42px, 5.5vw, 76px); line-height: 1.1;
+  color: var(--grey); letter-spacing: 0;
+  padding-left: clamp(28px, 4vw, 56px);
+  margin: 6px 0;
+}
+/* SPEAKS — Anton, oversized, bleeds */
+.coll-heading .word-speaks {
+  font-family: var(--anton); display: block;
+  font-size: clamp(72px, 10vw, 136px); line-height: 0.88;
+  color: var(--white); letter-spacing: 0.02em;
+}
+.coll-body {
+  font-size: 12px; font-weight: 300; line-height: 1.9;
+  color: rgba(245,244,242,0.55); max-width: 300px;
+}
+.coll-images { display: flex; flex-direction: column; gap: 12px; }
+.coll-img {
+  position: relative; overflow: hidden;
+}
+.coll-img img {
+  width: 100%; height: 560px; object-fit: cover; object-position: center top;
+  display: block; transform: scale(1.05); transition: transform 0.8s ease;
+}
+.coll-img:hover img { transform: scale(1.0); }
+.coll-img-label {
+  position: absolute; bottom: 18px; left: 18px;
+  font-size: 8px; font-weight: 700; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--white);
+  background: rgba(8,8,8,0.55); padding: 5px 11px; backdrop-filter: blur(4px);
+}
+
+/* ══════════════════════════════
+   PINNED CHAPTER — 3 full-screen beats
+   ══════════════════════════════ */
+#chapter { position: relative; height: 400vh; }
+.chapter-pin {
+  position: sticky; top: 0; height: 100vh; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.ch-bg {
+  position: absolute; inset: 0; opacity: 0; transition: opacity 0.65s ease;
+  will-change: opacity, transform;
+}
+.ch-bg.on { opacity: 1; }
+.ch-bg img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
+.ch-bg-dim { position: absolute; inset: 0; background: rgba(8,8,8,0.5); }
+.ch-panel {
+  position: absolute; inset: 0; display: flex;
+  align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity 0.45s ease;
+}
+.ch-panel.on { opacity: 1; pointer-events: auto; }
+.ch-text { text-align: center; padding: 0 32px; }
+.ch-num {
+  font-size: 8px; font-weight: 700; letter-spacing: 0.32em;
+  text-transform: uppercase; color: var(--red); margin-bottom: 16px;
+}
+.ch-big {
+  font-family: var(--anton);
+  font-size: clamp(72px, 14vw, 175px); line-height: 0.86;
+  color: var(--white); letter-spacing: 0.01em;
+}
+.ch-sub {
+  font-family: var(--serif); font-style: italic; font-weight: 300;
+  font-size: clamp(18px, 2.4vw, 30px); color: rgba(245,244,242,0.65); margin-top: 14px;
+}
+
+/* ══════════════════════════════
+   PHOTO GRID
+   Row 1: Forme_Hero.png spans 2 cols, Forme6.png (Studio White closeup) 1 col
+   Row 2: Forme1.png (Black Series), Forme2.png (Cherry Red back), Forme7.png (Cherry Red sitting)
+   ══════════════════════════════ */
+#grid { background: var(--white); padding: 120px 48px; }
+.grid-head {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  margin-bottom: 56px;
+}
+.grid-title {
+  font-family: var(--anton);
+  font-size: clamp(56px, 9vw, 120px); line-height: 0.88;
+  color: var(--black); letter-spacing: 0.02em;
+}
+.grid-title .ital {
+  font-family: var(--serif); font-style: italic; font-weight: 300;
+  font-size: 0.62em; display: block; color: var(--red);
+  letter-spacing: 0; line-height: 1.2; margin-top: 4px;
+}
+.grid-desc {
+  max-width: 240px; font-size: 11px; font-weight: 300;
+  line-height: 1.8; color: rgba(8,8,8,0.5); text-align: right;
+}
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 480px 380px;
+  gap: 5px;
+}
+/* Row 1 */
+.pg-hero { grid-column: 1 / 3; grid-row: 1; }  /* Forme_Hero.png wide */
+.pg-white-close { grid-column: 3; grid-row: 1; }  /* Forme6 Studio White */
+/* Row 2 */
+.pg-black { grid-column: 1; grid-row: 2; }  /* Forme1 Black Series */
+.pg-red-back { grid-column: 2; grid-row: 2; }  /* Forme2 Cherry Red back */
+.pg-red-sit { grid-column: 3; grid-row: 2; }  /* Forme7 Cherry Red sitting */
+
+.pg-item {
+  position: relative; overflow: hidden;
+}
+.pg-item img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center top;
+  display: block;
+  transform: scale(1.05); transition: transform 0.8s ease;
+}
+.pg-hero img { object-position: center center; }
+.pg-item:hover img { transform: scale(1.0); }
+.pg-over {
+  position: absolute; inset: 0;
+  background: rgba(8,8,8,0); transition: background 0.35s;
+  display: flex; align-items: center; justify-content: center;
+}
+.pg-item:hover .pg-over { background: rgba(200,16,46,0.1); }
+.pg-label {
+  font-size: 8px; font-weight: 700; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--white);
+  opacity: 0; transform: translateY(8px); transition: all 0.3s;
+}
+.pg-item:hover .pg-label { opacity: 1; transform: translateY(0); }
+
+/* ══════════════════════════════
+   STATEMENT
+   ══════════════════════════════ */
+#statement {
+  background: var(--black); padding: 160px 48px;
+  display: flex; align-items: center; justify-content: center;
+  min-height: 100vh; position: relative; overflow: hidden;
+}
+.stat-bg-word {
+  position: absolute;
+  font-family: var(--anton); font-size: clamp(100px, 22vw, 340px);
+  color: rgba(200,16,46,0.04); white-space: nowrap;
+  pointer-events: none; user-select: none; will-change: transform;
+}
+.stat-content { text-align: center; position: relative; z-index: 2; max-width: 820px; }
+.stat-eye {
+  font-size: 8px; font-weight: 700; letter-spacing: 0.3em;
+  text-transform: uppercase; color: var(--red); margin-bottom: 36px;
+}
+.stat-text {
+  font-family: var(--anton);
+  font-size: clamp(44px, 8vw, 96px); line-height: 1.0;
+  color: var(--white); letter-spacing: 0.02em;
+}
+.stat-text .break {
+  font-family: var(--serif); font-style: italic; font-weight: 300;
+  font-size: 0.55em; color: rgba(245,244,242,0.5);
+  display: block; letter-spacing: 0; line-height: 1.3; margin: 6px 0;
+}
+.stat-text .red { color: var(--red); }
+.stat-divider {
+  width: 1px; height: 72px; background: var(--red); margin: 44px auto;
+  transform: scaleY(0); transform-origin: top; transition: transform 0.8s ease;
+}
+.stat-divider.in { transform: scaleY(1); }
+.stat-sub {
+  font-size: 8px; font-weight: 700; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--grey);
+}
+
+/* ══════════════════════════════
+   SERIES — pinned 50/50 swap panels
+   Left = Cherry Red (cycles Forme5 → Forme7 → Forme2)
+   Right = Studio White / Black (cycles Forme6 → Forme4 → Forme1)
+   ══════════════════════════════ */
+#series { position: relative; height: 300vh; }
+.series-pin {
+  position: sticky; top: 0; height: 100vh;
+  display: grid; grid-template-columns: 1fr 1fr; overflow: hidden;
+}
+.series-side { position: relative; overflow: hidden; }
+.series-side img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: center top; display: block;
+  transition: opacity 0.65s ease;
+}
+.series-side img.off { opacity: 0; pointer-events: none; }
+.series-dim {
+  position: absolute; inset: 0; z-index: 2;
+  background: linear-gradient(to top, rgba(8,8,8,0.88) 0%, rgba(8,8,8,0.15) 55%, transparent 100%);
+}
+.series-info {
+  position: absolute; bottom: 40px; left: 36px; right: 36px; z-index: 3;
+}
+.series-name {
+  font-family: var(--anton);
+  font-size: clamp(40px, 5vw, 70px); line-height: 0.9;
+  color: var(--white); letter-spacing: 0.02em;
+}
+.series-sub {
+  font-size: 8px; font-weight: 700; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--red); margin-top: 10px;
+}
+.series-desc {
+  font-size: 11px; font-weight: 300; line-height: 1.7;
+  color: rgba(245,244,242,0.6); margin-top: 12px; max-width: 240px;
+}
+.series-divider {
+  position: absolute; top: 0; left: 50%; width: 1px; height: 100%;
+  background: rgba(245,244,242,0.1); z-index: 10;
+}
+.series-dots {
+  position: absolute; bottom: 24px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; gap: 8px; z-index: 20;
+}
+.series-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: rgba(245,244,242,0.3); transition: background 0.3s, transform 0.3s;
+}
+.series-dot.on { background: var(--red); transform: scale(1.4); }
+
+/* ══════════════════════════════
+   HORIZONTAL SCROLL
+   ══════════════════════════════ */
+#hscroll { position: relative; height: 280vh; }
+.hscroll-pin {
+  position: sticky; top: 0; height: 100vh;
+  overflow: hidden; display: flex; align-items: center;
+}
+.hscroll-track {
+  display: flex; gap: 24px; padding: 0 48px;
+  will-change: transform; align-items: center;
+}
+.hscroll-hdr {
+  flex: 0 0 auto; padding-right: 44px;
+  border-right: 1px solid rgba(245,244,242,0.1);
+}
+.hscroll-hdr-title {
+  font-family: var(--anton);
+  font-size: clamp(48px, 6vw, 88px); line-height: 1;
+  writing-mode: vertical-rl; letter-spacing: 0.06em; color: var(--white);
+}
+.hscroll-card {
+  flex: 0 0 340px; height: 500px; position: relative; overflow: hidden;
+}
+.hscroll-card img {
+  width: 100%; height: 100%; object-fit: cover; object-position: center top;
+  display: block; transform: scale(1.08); transition: transform 0.6s ease;
+}
+.hscroll-card:hover img { transform: scale(1.02); }
+.hscroll-dim {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(8,8,8,0.85) 0%, transparent 55%);
+}
+.hscroll-info { position: absolute; bottom: 24px; left: 24px; right: 24px; }
+.hscroll-name {
+  font-family: var(--anton); font-size: 34px;
+  letter-spacing: 0.04em; color: var(--white); line-height: 1;
+}
+.hscroll-sub {
+  font-size: 7px; font-weight: 700; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--red); margin-top: 7px;
+}
+
+/* ══════════════════════════════
+   CLOSING
+   ══════════════════════════════ */
+#closing {
+  position: relative; height: 100vh; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.close-bg { position: absolute; inset: 0; will-change: transform; }
+.close-bg img {
+  width: 100%; height: 120%; object-fit: cover; object-position: center 20%; display: block;
+}
+.close-dim {
+  position: absolute; inset: 0; background: rgba(8,8,8,0.58);
+}
+.close-content { position: relative; z-index: 2; text-align: center; padding: 0 24px; }
+.close-title {
+  font-family: var(--anton);
+  font-size: clamp(68px, 14vw, 200px); line-height: 0.85;
+  color: var(--white); letter-spacing: 0.02em;
+}
+.close-title .red { color: var(--red); display: block; }
+.close-btn {
+  display: inline-block; margin-top: 44px; padding: 14px 44px;
+  border: 1px solid var(--white);
+  font-size: 8px; font-weight: 700; letter-spacing: 0.25em;
+  text-transform: uppercase; color: var(--white); text-decoration: none;
+  position: relative; overflow: hidden; transition: color 0.35s;
+}
+.close-btn::before {
+  content: ''; position: absolute; inset: 0; background: var(--white);
+  transform: scaleX(0); transform-origin: left; transition: transform 0.35s; z-index: -1;
+}
+.close-btn:hover::before { transform: scaleX(1); }
+.close-btn:hover { color: var(--black); }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--black); border-top: 1px solid rgba(245,244,242,0.07);
+  padding: 44px 48px; display: flex; align-items: center; justify-content: space-between;
+}
+.ft-logo { font-family: var(--anton); font-size: 24px; letter-spacing: 0.18em; color: var(--white); }
+.ft-logo .e { color: var(--red); }
+.ft-credit {
+  font-size: 8px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--grey);
+}
+.ft-credit a {
+  color: var(--white); text-decoration: none;
+  border-bottom: 1px solid rgba(245,244,242,0.18); padding-bottom: 1px;
+  transition: color 0.2s, border-color 0.2s;
+}
+.ft-credit a:hover { color: var(--red); border-color: var(--red); }
+
+/* ── REVEAL ── */
+.reveal {
+  opacity: 0; transform: translateY(32px);
+  transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16,1,0.3,1);
+}
+.reveal.in { opacity: 1; transform: translateY(0); }
+
+/* ══════════════════════════════
+   MOBILE ≤768px
+   ══════════════════════════════ */
+@media (max-width: 768px) {
+  nav { padding: 18px 20px; }
+  .nav-links { display: none; }
+
+  /* Hero: stack vertically */
+  #hero {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    align-items: start;
+    padding-top: 80px;
+  }
+  .hero-left { grid-row: 2; padding: 20px 20px 16px; }
+  .hero-centre { grid-row: 1; padding: 0 20px; justify-content: flex-start; }
+  .hero-title { font-size: clamp(80px, 22vw, 130px); }
+  .hero-right { grid-row: 3; padding: 0 20px 48px; align-items: flex-start; }
+  .hero-stat { text-align: left; }
+  .hero-tagline { max-width: 100%; }
+
+  /* Collection */
+  #collection { grid-template-columns: 1fr; padding: 72px 20px; gap: 40px; }
+  .coll-text { position: relative; top: auto; transform: none; }
+  .coll-img img { height: 420px; }
+
+  /* Chapter */
+  #chapter { height: 350vh; }
+  .ch-big { font-size: clamp(56px, 16vw, 90px); }
+
+  /* Photo grid — 2 col on mobile, hero spans full width */
+  #grid { padding: 72px 20px; }
+  .grid-head { flex-direction: column; align-items: flex-start; gap: 16px; margin-bottom: 32px; }
+  .grid-desc { text-align: left; max-width: 100%; }
+  .photo-grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 260px 220px 220px;
+  }
+  .pg-hero { grid-column: 1 / 3; grid-row: 1; }
+  .pg-white-close { grid-column: 1; grid-row: 2; }
+  .pg-black { grid-column: 2; grid-row: 2; }
+  .pg-red-back { grid-column: 1; grid-row: 3; }
+  .pg-red-sit { grid-column: 2; grid-row: 3; }
+
+  /* Statement */
+  #statement { padding: 100px 20px; }
+  .stat-text { font-size: clamp(36px, 10vw, 56px); }
+
+  /* Series — full width stacked on mobile */
+  #series { height: auto; }
+  .series-pin { position: relative; height: auto; grid-template-columns: 1fr; }
+  .series-side { height: 75vw; min-height: 300px; }
+  .series-side img { position: absolute; }
+  .series-divider, .series-dots { display: none; }
+
+  /* H-scroll — native swipe */
+  #hscroll { height: auto; }
+  .hscroll-pin { position: relative; height: auto; overflow-x: auto; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory; }
+  .hscroll-track { transform: none !important; padding: 40px 20px; gap: 14px; }
+  .hscroll-card { flex: 0 0 76vw; height: 400px; scroll-snap-align: start; }
+  .hscroll-hdr { display: none; }
+
+  /* Closing */
+  #closing { height: 75svh; }
+  .close-title { font-size: clamp(52px, 15vw, 90px); }
+
+  footer { flex-direction: column; gap: 16px; text-align: center; padding: 32px 20px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursorRing"></div>
+
+<nav id="nav">
+  <a href="#" class="nav-logo">FORM<span class="e">E</span></a>
+  <ul class="nav-links">
+    <li><a href="#">Collection</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Shop</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section id="hero">
+  <div class="hero-bg">
+    <img src="Forme_Hero.png" alt="Forme activewear">
+  </div>
+  <div class="hero-slash" id="heroSlash"></div>
+
+  <div class="hero-left">
+    <p class="hero-eyebrow" id="heroEye">Activewear — 2025 Collection</p>
+    <p class="hero-tagline" id="heroTag">Engineered for the body.<br>Worn for the work.</p>
+    <div class="hero-scroll">
+      <span>Scroll</span>
+      <div class="hero-scroll-line"></div>
+    </div>
+  </div>
+
+  <div class="hero-centre">
+    <div class="hero-title" id="heroTitle">FORM<span class="e">E</span></div>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-stat" id="heroStat">
+      <div class="hero-stat-num">3</div>
+      <div class="hero-stat-label">Colourways</div>
+    </div>
+    <a href="#collection" class="hero-cta" id="heroCta">Shop Now</a>
+  </div>
+</section>
+
+<!-- ══ MARQUEE ══ -->
+<div class="marquee-strip">
+  <div class="marquee-inner">
+    <span>FORME ACTIVEWEAR</span><span>—</span><span>BUILT FOR THE BODY</span><span>—</span>
+    <span>CHERRY RED</span><span>—</span><span>STUDIO WHITE</span><span>—</span>
+    <span>BLACK SERIES</span><span>—</span><span>MOVE IN FORME</span><span>—</span>
+    <span>FORME ACTIVEWEAR</span><span>—</span><span>BUILT FOR THE BODY</span><span>—</span>
+    <span>CHERRY RED</span><span>—</span><span>STUDIO WHITE</span><span>—</span>
+    <span>BLACK SERIES</span><span>—</span><span>MOVE IN FORME</span><span>—</span>
+  </div>
+</div>
+
+<!-- ══ COLLECTION ══ -->
+<section id="collection">
+  <div class="coll-text">
+    <p class="coll-eyebrow reveal">The Collection</p>
+    <div class="coll-heading reveal" style="transition-delay:0.08s">
+      <span class="word-the">THE</span>
+      <span class="word-body">body</span>
+      <span class="word-speaks">SPEAKS</span>
+    </div>
+    <p class="coll-body reveal" style="transition-delay:0.18s">
+      Designed where performance meets presence. Forme moves with you — in the weight room, on the reformer, in the heat of the work. Every seam deliberate. Every silhouette exact.
+    </p>
+  </div>
+  <div class="coll-images">
+    <div class="coll-img reveal">
+      <img src="Forme1.png" alt="Black Series — full length barbell">
+      <div class="coll-img-label">The Black Series</div>
+    </div>
+    <div class="coll-img reveal" style="transition-delay:0.12s">
+      <img src="Forme5.png" alt="Cherry Red — reformer leaning">
+      <div class="coll-img-label">Cherry Red</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PINNED CHAPTER ══ -->
+<section id="chapter">
+  <div class="chapter-pin">
+    <!-- bg0: Forme2 red cross-back -->
+    <div class="ch-bg on" id="chBg0">
+      <img src="Forme2.png" alt="">
+      <div class="ch-bg-dim"></div>
+    </div>
+    <!-- bg1: Forme3 red shoulder -->
+    <div class="ch-bg" id="chBg1">
+      <img src="Forme3.png" alt="">
+      <div class="ch-bg-dim"></div>
+    </div>
+    <!-- bg2: Forme4 white cross-back -->
+    <div class="ch-bg" id="chBg2">
+      <img src="Forme4.png" alt="">
+      <div class="ch-bg-dim"></div>
+    </div>
+
+    <div class="ch-panel on" id="chP0">
+      <div class="ch-text">
+        <p class="ch-num">01 — PRECISION</p>
+        <div class="ch-big">EVERY<br>CURVE</div>
+        <p class="ch-sub">built to fit your form exactly</p>
+      </div>
+    </div>
+    <div class="ch-panel" id="chP1">
+      <div class="ch-text">
+        <p class="ch-num">02 — MOVEMENT</p>
+        <div class="ch-big">PUSH<br>HARDER</div>
+        <p class="ch-sub">performance fabrics, unrestricted range</p>
+      </div>
+    </div>
+    <div class="ch-panel" id="chP2">
+      <div class="ch-text">
+        <p class="ch-num">03 — IDENTITY</p>
+        <div class="ch-big">THIS IS<br>FORME</div>
+        <p class="ch-sub">the body is the statement</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PHOTO GRID ══ -->
+<section id="grid">
+  <div class="grid-head">
+    <h2 class="grid-title reveal">
+      THE
+      <span class="ital">edit</span>
+    </h2>
+    <p class="grid-desc reveal" style="transition-delay:0.1s">
+      Three colourways. One direction. A collection built on confidence, cut to move.
+    </p>
+  </div>
+  <div class="photo-grid">
+    <!-- Row 1 left wide: Forme_Hero mood board -->
+    <div class="pg-item pg-hero reveal">
+      <img src="Forme_Hero.png" alt="Full edit">
+      <div class="pg-over"><span class="pg-label">The Full Edit</span></div>
+    </div>
+    <!-- Row 1 right: Forme6 Studio White close-up -->
+    <div class="pg-item pg-white-close reveal" style="transition-delay:0.05s">
+      <img src="Forme6.png" alt="Studio White">
+      <div class="pg-over"><span class="pg-label">Studio White</span></div>
+    </div>
+    <!-- Row 2: Forme1 Black Series -->
+    <div class="pg-item pg-black reveal" style="transition-delay:0.03s">
+      <img src="Forme1.png" alt="Black Series">
+      <div class="pg-over"><span class="pg-label">Black Series</span></div>
+    </div>
+    <!-- Row 2: Forme2 Cherry Red back -->
+    <div class="pg-item pg-red-back reveal" style="transition-delay:0.06s">
+      <img src="Forme2.png" alt="Cherry Red">
+      <div class="pg-over"><span class="pg-label">Cherry Red</span></div>
+    </div>
+    <!-- Row 2: Forme7 Cherry Red sitting -->
+    <div class="pg-item pg-red-sit reveal" style="transition-delay:0.09s">
+      <img src="Forme7.png" alt="Cherry Red">
+      <div class="pg-over"><span class="pg-label">Cherry Red</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ STATEMENT ══ -->
+<section id="statement">
+  <div class="stat-bg-word" id="statBg">FORME</div>
+  <div class="stat-content">
+    <p class="stat-eye reveal">The philosophy</p>
+    <p class="stat-text reveal" style="transition-delay:0.1s">
+      STRENGTH<span class="break">is a silhouette</span>
+      DISCIPLINE<span class="break">is a design principle</span>
+      <span class="red">FORME.</span>
+    </p>
+    <div class="stat-divider" id="statDiv"></div>
+    <p class="stat-sub reveal" style="transition-delay:0.3s">Forme — 2025 Collection</p>
+  </div>
+</section>
+
+<!-- ══ SERIES ══ -->
+<section id="series">
+  <div class="series-pin" id="seriesPin">
+    <!-- Left: Cherry Red -->
+    <div class="series-side" id="sL">
+      <img src="Forme5.png" alt="Cherry Red reformer" id="sL0"><!-- on by default -->
+      <img src="Forme7.png" alt="Cherry Red sitting" id="sL1" class="off">
+      <img src="Forme2.png" alt="Cherry Red back"    id="sL2" class="off">
+      <div class="series-dim"></div>
+      <div class="series-info">
+        <div class="series-name">CHERRY<br>RED</div>
+        <div class="series-sub" id="sLsub">The Reformer</div>
+        <p class="series-desc">Sculpted in crimson. For those who show up and show out.</p>
+      </div>
+    </div>
+    <!-- Right: Studio White → Black -->
+    <div class="series-side" id="sR">
+      <img src="Forme6.png" alt="Studio White close-up"  id="sR0"><!-- on by default -->
+      <img src="Forme4.png" alt="Studio White cross-back" id="sR1" class="off">
+      <img src="Forme1.png" alt="Black Series"            id="sR2" class="off">
+      <div class="series-dim"></div>
+      <div class="series-info">
+        <div class="series-name" id="sRname">STUDIO<br>WHITE</div>
+        <div class="series-sub"  id="sRsub">The Practice</div>
+        <p class="series-desc"   id="sRdesc">Clean lines, quiet confidence. Made for the work before anyone's watching.</p>
+      </div>
+    </div>
+    <div class="series-divider"></div>
+    <div class="series-dots">
+      <div class="series-dot on" id="sd0"></div>
+      <div class="series-dot"    id="sd1"></div>
+      <div class="series-dot"    id="sd2"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ HORIZONTAL SCROLL ══ -->
+<section id="hscroll">
+  <div class="hscroll-pin">
+    <div class="hscroll-track" id="htrack">
+      <div class="hscroll-hdr">
+        <div class="hscroll-hdr-title">THE<br>LOOK</div>
+      </div>
+      <div class="hscroll-card">
+        <img src="Forme1.png" alt="Black Series">
+        <div class="hscroll-dim"></div>
+        <div class="hscroll-info"><div class="hscroll-name">BLACK<br>SERIES</div><div class="hscroll-sub">The Weight Room</div></div>
+      </div>
+      <div class="hscroll-card">
+        <img src="Forme5.png" alt="Cherry Red reformer">
+        <div class="hscroll-dim"></div>
+        <div class="hscroll-info"><div class="hscroll-name">CHERRY<br>RED</div><div class="hscroll-sub">The Reformer</div></div>
+      </div>
+      <div class="hscroll-card">
+        <img src="Forme6.png" alt="Studio White">
+        <div class="hscroll-dim"></div>
+        <div class="hscroll-info"><div class="hscroll-name">STUDIO<br>WHITE</div><div class="hscroll-sub">The Practice</div></div>
+      </div>
+      <div class="hscroll-card">
+        <img src="Forme3.png" alt="Red detail">
+        <div class="hscroll-dim"></div>
+        <div class="hscroll-info"><div class="hscroll-name">THE<br>DETAIL</div><div class="hscroll-sub">Forme Signature</div></div>
+      </div>
+      <div class="hscroll-card">
+        <img src="Forme4.png" alt="White cross-back">
+        <div class="hscroll-dim"></div>
+        <div class="hscroll-info"><div class="hscroll-name">CROSS<br>BACK</div><div class="hscroll-sub">Studio White</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CLOSING ══ -->
+<section id="closing">
+  <div class="close-bg" id="closeBg">
+    <img src="Forme5.png" alt="">
+  </div>
+  <div class="close-dim"></div>
+  <div class="close-content">
+    <div class="close-title">WEAR<span class="red">YOUR</span>WORK.</div>
+    <a href="#" class="close-btn">Shop the Collection</a>
+  </div>
+</section>
+
+<footer>
+  <div class="ft-logo">FORM<span class="e">E</span></div>
+  <p class="ft-credit">Site by <a href="https://builtbyherdesigns.com" target="_blank">Built By Her</a></p>
+</footer>
+
+<script>
+// ── CURSOR
+const cur = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+(function tick(){
+  rx+=(mx-rx)*0.14; ry+=(my-ry)*0.14;
+  cur.style.left=mx+'px'; cur.style.top=my+'px';
+  ring.style.left=rx+'px'; ring.style.top=ry+'px';
+  requestAnimationFrame(tick);
+})();
+
+// ── NAV glass on scroll
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>60),{passive:true});
+
+// ── HERO load reveal
+window.addEventListener('load',()=>{
+  setTimeout(()=>{
+    ['heroTitle','heroSlash','heroEye','heroTag','heroStat','heroCta'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el) el.classList.add('in');
+    });
+  },150);
+});
+
+// ── HERO parallax: bg drifts down, title counter-floats up
+const heroBg = document.querySelector('.hero-bg');
+const heroTitleEl = document.getElementById('heroTitle');
+function heroParallax(){
+  const s=scrollY, h=document.getElementById('hero').offsetHeight;
+  if(s<h){
+    heroBg.style.transform=`translateY(${s*0.28}px)`;
+    heroTitleEl.style.transform=`translateY(${s*-0.06}px)`;
+  }
+}
+
+// ── INTERSECTION OBSERVER for .reveal
+const ro = new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');}),{threshold:0.12});
+document.querySelectorAll('.reveal').forEach(r=>ro.observe(r));
+
+// ── STATEMENT divider
+const statDiv=document.getElementById('statDiv');
+new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)statDiv.classList.add('in');}),{threshold:0.5}).observe(statDiv);
+
+// ── PINNED CHAPTER
+const chapterEl=document.getElementById('chapter');
+const chBgs=[0,1,2].map(i=>document.getElementById('chBg'+i));
+const chPs=[0,1,2].map(i=>document.getElementById('chP'+i));
+function updateChapter(){
+  const r=chapterEl.getBoundingClientRect();
+  const p=Math.max(0,Math.min(0.999,-r.top/(chapterEl.offsetHeight-innerHeight)));
+  const idx=Math.min(2,Math.floor(p*3));
+  chBgs.forEach((b,i)=>{b.classList.toggle('on',i===idx); if(i===idx)b.style.transform=`translateY(${((p*3)-idx)*-25}px)`;});
+  chPs.forEach((b,i)=>b.classList.toggle('on',i===idx));
+}
+
+// ── SERIES swap
+const seriesEl=document.getElementById('series');
+const sLimgs=[0,1,2].map(i=>document.getElementById('sL'+i));
+const sRimgs=[0,1,2].map(i=>document.getElementById('sR'+i));
+const sdots=[0,1,2].map(i=>document.getElementById('sd'+i));
+const sRname=document.getElementById('sRname');
+const sRsub=document.getElementById('sRsub');
+const sRdesc=document.getElementById('sRdesc');
+const sLsub=document.getElementById('sLsub');
+const seriesData=[
+  {ls:'The Reformer', rn:'STUDIO<br>WHITE', rs:'The Practice', rd:"Clean lines, quiet confidence. Made for the work before anyone's watching."},
+  {ls:'The Sitting',  rn:'STUDIO<br>WHITE', rs:'The Cross-Back', rd:'The signature cross-back. Engineered to stay, built to show.'},
+  {ls:'The Detail',   rn:'BLACK<br>SERIES',  rs:'The Weight Room', rd:'No colour. No compromise. For those who let the work speak.'},
+];
+let lastSeries=-1;
+function updateSeries(){
+  const r=seriesEl.getBoundingClientRect();
+  if(r.top>0||r.bottom<innerHeight) return;
+  const p=Math.max(0,Math.min(0.999,-r.top/(seriesEl.offsetHeight-innerHeight)));
+  const idx=Math.min(2,Math.floor(p*3));
+  if(idx===lastSeries) return;
+  lastSeries=idx;
+  sLimgs.forEach((img,i)=>img.classList.toggle('off',i!==idx));
+  sRimgs.forEach((img,i)=>img.classList.toggle('off',i!==idx));
+  sdots.forEach((d,i)=>d.classList.toggle('on',i===idx));
+  const d=seriesData[idx];
+  sLsub.textContent=d.ls;
+  sRname.innerHTML=d.rn;
+  sRsub.textContent=d.rs;
+  sRdesc.textContent=d.rd;
+}
+
+// ── HORIZONTAL SCROLL (desktop only)
+const hscrollEl=document.getElementById('hscroll');
+const htrack=document.getElementById('htrack');
+function updateHscroll(){
+  if(innerWidth<=768){htrack.style.transform='';return;}
+  const r=hscrollEl.getBoundingClientRect();
+  const p=Math.max(0,Math.min(1,-r.top/(hscrollEl.offsetHeight-innerHeight)));
+  htrack.style.transform=`translateX(${-p*(htrack.scrollWidth-innerWidth)}px)`;
+}
+
+// ── STATEMENT bg float
+const statBg=document.getElementById('statBg');
+const statEl=document.getElementById('statement');
+function updateStat(){
+  const r=statEl.getBoundingClientRect();
+  statBg.style.transform=`translateX(${(r.top+r.height/2-innerHeight/2)*0.04}px)`;
+}
+
+// ── CLOSING parallax
+const closeBg=document.getElementById('closeBg');
+const closeEl=document.getElementById('closing');
+function updateClose(){
+  const r=closeEl.getBoundingClientRect();
+  closeBg.style.transform=`translateY(${((innerHeight-r.top)/(innerHeight+r.height)-0.5)*50}px)`;
+}
+
+// ── SCROLL HANDLER
+window.addEventListener('scroll',()=>{
+  heroParallax();
+  updateChapter();
+  updateSeries();
+  updateHscroll();
+  updateStat();
+  updateClose();
+},{passive:true});
+
+// init
+heroParallax(); updateChapter(); updateSeries(); updateHscroll(); updateStat(); updateClose();
+</script>
+</body>
+</html>
